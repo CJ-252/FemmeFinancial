@@ -7,6 +7,10 @@ MODEL = "qwen3.5:4b"
 
 SYSTEM_PROMPT = """You are a local Financial Analyst specialized in personal budgeting. Analyze the provided categorical data, evaluate spending habits, find inefficiencies, and suggest realistic, structured changes. Keep responses short, data-focused and actionable. Never recalculate the numbers; use the figures given to you exactly."""
 
+# Qwen3.5 in Ollama only supports thinking on/off (no length control), and on this machine
+# thinking can burn >1500 tokens without answering, so it is off by default.
+THINK = False
+
 # Default target split (50/30/20 rule)
 TARGETS = {"needs": 0.50, "wants": 0.30, "savings": 0.20}
 
@@ -154,7 +158,7 @@ def ask_emergency_fund(needs, savings):
 
 
 def chat(messages):
-    reply = ollama.chat(model=MODEL, messages=messages)["message"]["content"]
+    reply = ollama.chat(model=MODEL, messages=messages, think=THINK)["message"]["content"]
     messages.append({"role": "assistant", "content": reply})
     return reply
 
